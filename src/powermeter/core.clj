@@ -1,4 +1,5 @@
 (ns powermeter.core
+  (:gen-class)
   (:use org.httpkit.server)
   (:use ring.util.response)
   (:require [compojure.core :refer :all]
@@ -15,22 +16,14 @@
 
 
 (def ^{:private true} default-port 8093)
+
 (def ^{:private true} max-data-length (* 13 60))
 (def ^{:private true} pwr-data (atom []))
 
-
 (def ^{:private true} prev-data (atom 0))
 
-; @pwr-data
+(defonce server (atom nil))
 
-;; store as list and return reversed vector ?
-; or a vector, as of now ?. What would be most efficient...
-
-; (last @pwr-data)
-; (vector? @pwr-data)
-
-; (vector? (rest (vector @pwr-data)))
-; (reset! pwr-data (rest (vec @pwr-data)))
 
 (defn- time-string [millisec]
   (str (t/from-time-zone
@@ -41,9 +34,6 @@
 (defn- ms-time [ts]
   (* 1000 (read-string (first (clojure.string/split ts #"\."))))
 )
-
-
-@prev-data
 
 
 (defn- add-pwr-data
@@ -95,11 +85,9 @@
       ))
 
 
-(defonce server (atom nil))
 
 (defn start-server [port-no]
   (reset! server (run-server #'handler {:port port-no})))
-
 
 (defn stop-server []
   (when-not (nil? @server)
@@ -107,10 +95,6 @@
     ;; :timeout is optional, when no timeout, stop immediately
     (@server :timeout 100)
     (reset! server nil)))
-
-
-; (start-server 8093)
-; (stop-server)
 
 
 (defn -main [& args]
