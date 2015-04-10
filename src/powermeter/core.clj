@@ -11,8 +11,8 @@
             [clojure.data.json :as json]
             [clj-time.core :as t]
             [clj-time.coerce :as c]
-            )
-  )
+            [clj-time.local :as l]
+            ))
 
 
 (def ^{:private true} default-port 8093)
@@ -26,9 +26,7 @@
 
 
 (defn- time-string [millisec]
-  (str (t/from-time-zone
-        (c/from-long millisec)
-        (t/time-zone-for-offset +1))))
+  (str (l/format-local-time millisec :date-time)))
 
 
 (defn- ms-time [ts]
@@ -85,9 +83,9 @@
       ))
 
 
-
 (defn start-server [port-no]
   (reset! server (run-server #'handler {:port port-no})))
+
 
 (defn stop-server []
   (when-not (nil? @server)
