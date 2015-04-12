@@ -3,25 +3,20 @@
 <head>
     <meta charset="utf-8">
     <title>Energy Meter</title>
-    <script src="jquery-1.10.2.js"></script>
+    <script src="/d3.v3.js"></script>
     <link rel="stylesheet" href="tempview.css">
 </head>
 
 <style>
-
-div.x1 {
-  color: #FFE;
-  border: #556699 solid 1px;
-
-  width: 700px;
-  height: 350px;
-  background-color: #eeeed7;
-  position:relative;
-  box-shadow: inset 0 0px 0px yellow, 2px 2px 8px #6666EE;
-}
-
 body {
   font: 10px sans-serif;
+}
+
+div.power_graph {
+  border: #556699 solid 1px;
+  width: 700px;
+  height: 350px;
+  position:relative;
 }
 
 .axis path,
@@ -43,14 +38,12 @@ body {
 </style>
 
 <body onload="updateAll()">
-<script src="/d3.v3.js"></script>
-    <div id="watt">power:</div>
 
-<div id="x1" class="x1" style="position:absolute; top:50px; left:20px;"></div>
+<div id="power_graph" class="power_graph" style="position:absolute; top:1px; left:1px;"></div>
 
 <script>
 
-var margin = {top: 20, right: 20, bottom: 20, left: 60},
+var margin = {top: 20, right: 10, bottom: 20, left: 50},
     width = 660 - margin.left - margin.right,
     height = 300 - margin.top - margin.bottom;
 
@@ -69,12 +62,8 @@ var yAxis = d3.svg.axis()
     .scale(y)
     .orient("left");
 
-var line2 = d3.svg.line()
-    .x(function(d) { return x(d.time); })
-    .y(function(d) { return y(d.ws); });
 
-
-var svgx = d3.select("#x1").append("svg")
+var svgx = d3.select("#power_graph").append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
 
@@ -102,8 +91,9 @@ var svgx = d3.select("#x1").append("svg")
         .attr("class", "y axis")
         .call(yAxis)
         .append("text")
-        .attr("transform", "rotate(-90)")
-        .attr("y", 6)
+
+        .attr("x", -12)
+        .attr("y", -15)
         .attr("dy", ".71em")
         .style("text-anchor", "end")
         .text("Watt");
@@ -111,7 +101,10 @@ var svgx = d3.select("#x1").append("svg")
         svgx.append("path")
         .datum(data)
         .attr("class", "line")
-        .attr("d", line2);
+        .attr("d", d3.svg.line()
+              .x(function(d) { return x(d.time); })
+              .y(function(d) { return y(d.ws); }));
+
         });
     }
 
