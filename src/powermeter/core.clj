@@ -24,9 +24,11 @@
 
 (defonce server (atom nil))
 
+(def time_zone (t/time-zone-for-offset 2))
 
 (defn- time-string [millisec]
-  (str (l/format-local-time millisec :date-time)))
+  (str (l/format-local-time
+      (t/to-time-zone  (c/from-long millisec) time_zone) :date-time)))
 
 
 (defn- ms-time [ts]
@@ -36,14 +38,14 @@
 
 (defn- add-pwr-data
   "Add to the tail of the pwr-data array, drop the first entry when max size is exceeded"
-  [timestamp ws kwh]
+  [timestamp watt kwh]
 
   (let [num (read-string kwh)]
     (println "kwh " kwh "   num:" num  "   time:" (time-string timestamp))
     (println "diff:" (- num @prev-data))
     (reset! prev-data num)
     )
-  (let [data (conj (vec @pwr-data) {:ws ws :kwh kwh :time (time-string timestamp) :ms timestamp})]
+  (let [data (conj (vec @pwr-data) {:watt watt :kwh kwh :timestamp timestamp})]
     (if (> (count data) max-data-length)
       (reset! pwr-data (rest data))
       (reset! pwr-data data)
@@ -51,12 +53,10 @@
   nil)
 
 
-(defn- handle-pwr-data-post [body]
-  (let [millisec  (ms-time (:ts body))]
-    (add-pwr-data millisec (:ws (get (:msg body) 0)) (:kwh (get (:msg body) 0)))
-    )
-  (response nil)
-)
+(defn- handle-pwr-data-post [msg]
+  (doseq [body msg]
+    (add-pwr-data (read-string (:timestamp body)) (:watt body) (:kwh body)))
+  (response nil))
 
 
 (defn- get-power-data
@@ -85,7 +85,6 @@
 
 (defn start-server [port-no]
   (reset! server (run-server #'handler {:port port-no})))
-
 
 (defn stop-server []
   (when-not (nil? @server)

@@ -73,12 +73,12 @@ var svgx = d3.select("#power_graph").append("svg")
     function draw_power_graph() {
         d3.json("/powerdata/", function(error, data) {
             data.forEach(function(d) {
-                d.time = d.ms;
-                d.ws = +d.ws;
+                d.time = d.timestamp;
+                d.watt = +d.watt;
             });
 
         x.domain(d3.extent(data, function(d) { return d.time; }));
-        y.domain(d3.extent(data, function(d) { return d.ws; }));
+        y.domain(d3.extent(data, function(d) { return d.watt; }));
 
         svgx.selectAll("*").remove();
 
@@ -103,7 +103,7 @@ var svgx = d3.select("#power_graph").append("svg")
         .attr("class", "line")
         .attr("d", d3.svg.line()
               .x(function(d) { return x(d.time); })
-              .y(function(d) { return y(d.ws); }));
+              .y(function(d) { return y(d.watt); }));
 
         });
     }
