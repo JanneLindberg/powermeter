@@ -8,37 +8,36 @@
 </head>
 
 <style>
-body {
-  font: 10px sans-serif;
-}
+    body {
+        font: 10px sans-serif;
+    }
 
-div.power_graph {
-  border: #556699 solid 1px;
-  width: 700px;
-  height: 350px;
-  position:relative;
-}
+    div.power_graph {
+        border: #556699 solid 1px;
+        width: 700px;
+        height: 350px;
+        position:relative;
+    }
 
-.axis path,
-.axis line {
-   fill: none;
-   stroke: #000;
-   shape-rendering: crispEdges;
-}
+    .axis path,
+    .axis line {
+        fill: none;
+        stroke: #000;
+        shape-rendering: crispEdges;
+    }
 
-.x.axis path {
-}
+    .x.axis path {
+    }
 
-.line {
-  fill: none;
-  stroke: steelblue;
-  stroke-width: 1.5px;
-}
+    .line {
+        fill: none;
+        stroke: steelblue;
+        stroke-width: 1.5px;
+    }
 
 </style>
 
 <body onload="updateAll()">
-
 <div id="power_graph" class="power_graph" style="position:absolute; top:1px; left:1px;"></div>
 
 <script>
@@ -118,7 +117,6 @@ function updateAll() {
     update();
 }
 
-</script>
-</div>
+  </script>
 </body>
 </html>

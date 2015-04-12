@@ -24,6 +24,7 @@
 
 (defonce server (atom nil))
 
+
 (def time_zone (t/time-zone-for-offset 2))
 
 (defn- time-string [millisec]
@@ -41,10 +42,9 @@
   [timestamp watt kwh]
 
   (let [num (read-string kwh)]
-    (println "kwh " kwh "   num:" num  "   time:" (time-string timestamp))
-    (println "diff:" (- num @prev-data))
-    (reset! prev-data num)
-    )
+;    (println "kwh " kwh "   num:" num  "   time:" (time-string timestamp))
+;    (println "diff:" (- num @prev-data))
+    (reset! prev-data num))
   (let [data (conj (vec @pwr-data) {:watt watt :kwh kwh :timestamp timestamp})]
     (if (> (count data) max-data-length)
       (reset! pwr-data (rest data))
