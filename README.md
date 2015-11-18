@@ -3,6 +3,7 @@
 A simple application to view the energy consumption as measured by the
 raspberry-pi
 
+
 ## Usage
 
 TODO
